@@ -549,3 +549,36 @@ footer{ background:var(--blue); color:var(--steel-light); padding:56px 0 28px; }
   .simple-modal-content { max-width: 95%; }
   .simple-modal-close { right: 15px; top: 10px; }
 }
+/* ==========================================
+   HERO SECTION
+   ========================================== */
+.hero{ position: relative; overflow: hidden; padding: 96px 0 72px; border-bottom: 1px solid var(--line); background: var(--paper); }
+.hero-bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+.hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(11,17,32,0.85), rgba(11,17,32,0.6)); z-index: 2; }
+.hero .wrap{ position: relative; z-index: 3; }
+.hero-grid{ display:grid; grid-template-columns:1.1fr 0.7fr; gap:56px; align-items:end; }
+
+/* Default text color for normal heroes (About, Products, Contact) - ROYAL BLUE */
+.hero h1{ font-family:'Montserrat', sans-serif; font-weight:900; font-size:clamp(42px,6.2vw,84px); color:#0047AB; margin:18px 0 22px; }
+.hero h1 .accent{ color:var(--red); }
+.hero p.lede{ font-size:18px; color:var(--steel); max-width:46ch; margin-bottom:32px; }
+
+/* Override text color ONLY for the Home page hero with background image */
+.hero-dark h1{ color:#FFFFFF; }
+.hero-dark h1 .accent{ color:var(--yellow); }
+.hero-dark p.lede{ color:#E2E8F0; }
+.hero-dark .btn-outline{ border-color:#FFFFFF; color:#FFFFFF; }
+.hero-dark .btn-outline:hover{ border-color:var(--yellow); color:var(--yellow); background: rgba(242, 169, 59, 0.05); }
+
+/* Buttons (Shared) */
+.btn-row{ display:flex; gap:14px; flex-wrap:wrap; }
+.btn{ display:inline-flex; align-items:center; gap:8px; padding:15px 28px; font-family:'Montserrat', sans-serif; font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; border:1px solid transparent; border-radius:var(--radius); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+.btn::after{ content:"→"; font-size:16px; transition: transform 0.3s ease; }
+.btn:hover::after{ transform: translateX(4px); }
+.btn-primary{ background: linear-gradient(135deg, var(--yellow), var(--yellow-deep)); color:var(--blue); box-shadow: 0 4px 15px rgba(242, 169, 59, 0.3); }
+.btn-primary:hover{ transform: translateY(-3px); box-shadow: 0 8px 25px rgba(242, 169, 59, 0.4); filter: brightness(1.1); }
+.btn-outline{ border-color:#0047AB; color:#0047AB; }
+.btn-outline:hover{ border-color:var(--red); color:var(--red); background: rgba(214, 40, 40, 0.05); }
+/* ==========================================
+   HERO SECTION END
+   ========================================== */
