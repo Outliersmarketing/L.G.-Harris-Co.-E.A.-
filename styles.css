@@ -154,9 +154,44 @@ nav.primary-links a:hover, nav.primary-links a[aria-current="page"]{ border-colo
 
 /* BRANDS */
 .brand-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
-.brand-card{ background:var(--blue); color:var(--paper); padding:28px; border-top:4px solid var(--red); border-radius:var(--radius); }
-.brand-card h4{ font-family:'Montserrat', sans-serif; font-weight:800; font-size:22px; text-transform:uppercase; letter-spacing:0.02em; margin-bottom:10px; }
-.brand-card p{ color:var(--steel-light); font-size:14px; }
+.brand-card{ 
+  background:#fff; 
+  color:var(--blue); 
+  padding:32px; 
+  border-radius:var(--radius); 
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 20px rgba(11,17,32,0.04);
+  text-align: center; 
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.brand-card:hover { 
+  transform: translateY(-4px); 
+  box-shadow: 0 14px 28px rgba(11,17,32,0.08); 
+}
+.brand-logo { 
+  width: 100%; 
+  height: 120px; 
+  margin-bottom: 24px; 
+  background: none; /* Removed grey background */
+  border: none; /* Removed border */
+  border-radius: 0;
+  overflow: hidden; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  padding: 0; /* Removed padding so logos can be bigger */
+}
+.brand-logo img { 
+  width: auto; /* Let logo keep natural width */
+  max-width: 100%; 
+  max-height: 100%; 
+  height: auto;
+  object-fit: contain; 
+  object-position: center;
+
+}
+.brand-card h4{ font-family:'Montserrat', sans-serif; font-weight:800; font-size:20px; text-transform:uppercase; letter-spacing:0.02em; margin-bottom:10px; }
+.brand-card p{ color:var(--steel); font-size:14px; }
 
 /* ABOUT */
 .about-grid{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:64px; align-items:start; }
@@ -426,28 +461,22 @@ footer{ background:var(--blue); color:var(--steel-light); padding:56px 0 28px; }
 .hero-dark .btn-outline{ border-color:#0047AB; color:#0047AB; }
 .hero-dark .btn-outline:hover{ border-color:var(--red); color:var(--red); background: rgba(214, 40, 40, 0.05); }
 
-/* Force text to the far left white space */
+/* Force text to the far left white space and away from center brushes */
 .hero-dark .hero-grid {
   display: flex; 
-  justify-content: flex-start; /* Pushes everything to the far left */
-  align-items: center; /* Centers vertically to avoid bottom brushes */
+  justify-content: flex-start; 
+  align-items: center; 
   height: 100%;
 }
 .hero-dark .hero-grid > div {
   background: none;
   padding: 0;
   border: none;
-  width: 45%; /* Forces text to only take the left 45% of the screen */
-  max-width: 450px;
+  width: 30%; /* Forces it to only take the left 30% of the screen */
+  max-width: 320px; /* Keeps it locked in the left corner */
 }
-
-/* Remove dark box and push text to the far left */
-.hero-dark .hero-grid > div {
-  background: none;
-  padding: 0;
-  border: none;
-  max-width: 500px;
-  margin-right: auto;
+.hero-dark p.lede {
+  max-width: 32ch; /* Prevents the paragraph from stretching right into the brushes */
 }
 
 /* Buttons (Shared) */
