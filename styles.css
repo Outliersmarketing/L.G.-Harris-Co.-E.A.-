@@ -62,7 +62,8 @@ nav.primary-links a:hover, nav.primary-links a[aria-current="page"]{ border-colo
 .nav-cart:hover { color: var(--red); }
 .nav-cart svg { width: 24px; height: 24px; fill: currentColor; }
 .nav-cart span { position: absolute; top: -6px; right: -8px; background: var(--red); color: #fff; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
-[10/27/2026 8:52 AM] ʙᴏɴɴɪᴇʜᴋʀ3🚫: .nav-cta{ display: inline-flex; align-items:center; gap:8px; background: linear-gradient(135deg, var(--red), #B11B1B); color: var(--paper); font-family:'Montserrat', sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:14px 26px; border:none; border-radius:var(--radius); transition:all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 4px 15px rgba(214, 40, 40, 0.25); position:relative; }
+
+.nav-cta{ display: inline-flex; align-items:center; gap:8px; background: linear-gradient(135deg, var(--red), #B11B1B); color: var(--paper); font-family:'Montserrat', sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:14px 26px; border:none; border-radius:var(--radius); transition:all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 4px 15px rgba(214, 40, 40, 0.25); position:relative; }
 .nav-cta::after{ content:"→"; font-size:16px; font-weight:700; transition: transform 0.3s ease; }
 .nav-cta:hover{ transform: translateY(-3px); box-shadow: 0 8px 25px rgba(214, 40, 40, 0.35); filter: brightness(1.1); }
 .nav-cta:hover::after{ transform: translateX(4px); }
@@ -98,7 +99,8 @@ nav.primary-links a:hover, nav.primary-links a[aria-current="page"]{ border-colo
 .cat-card h3{ font-family:'Montserrat', sans-serif; font-size:19px; font-weight:700; margin:12px 0 8px; }
 .cat-card p{ color:var(--steel); font-size:14px; margin-bottom:14px; }
 .cat-card .pack{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--steel-light); border-top:1px dashed var(--line); padding-top:12px; }
-[10/27/2026 8:52 AM] ʙᴏɴɴɪᴇʜᴋʀ3🚫: /* PRODUCT PAGE */
+
+/* PRODUCT PAGE */
 .filter-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:40px; }
 .filter-btn{ background:transparent; border:1px solid var(--line); padding:10px 18px; font-family:'Montserrat', sans-serif; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.03em; border-radius:var(--radius); transition:all .15s ease; }
 .filter-btn.active, .filter-btn:hover{ background:var(--blue); color:var(--paper); border-color:var(--blue); }
@@ -134,7 +136,7 @@ nav.primary-links a:hover, nav.primary-links a[aria-current="page"]{ border-colo
 .cat-tile:hover{ transform:translateY(-3px); box-shadow:0 12px 24px rgba(11,17,32,0.08); }
 .cat-tile .ph-image{ aspect-ratio:1/1; }
 .cat-tile .tile-body{ padding:16px 12px 20px; }
-[10/27/2026 8:52 AM] ʙᴏɴɴɪᴇʜᴋʀ3🚫: .cat-tile h3{ font-family:'Montserrat', sans-serif; font-size:14.5px; font-weight:800; text-transform:uppercase; letter-spacing:0.02em; padding-bottom:8px; margin-bottom:6px; border-bottom:2px solid var(--red); display:inline-block; }
+.cat-tile h3{ font-family:'Montserrat', sans-serif; font-size:14.5px; font-weight:800; text-transform:uppercase; letter-spacing:0.02em; padding-bottom:8px; margin-bottom:6px; border-bottom:2px solid var(--red); display:inline-block; }
 .cat-tile .tile-code { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--steel); font-weight: 600; }
 .cat-tile.hidden{ display:none; }
 
@@ -152,9 +154,44 @@ nav.primary-links a:hover, nav.primary-links a[aria-current="page"]{ border-colo
 
 /* BRANDS */
 .brand-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
-.brand-card{ background:var(--blue); color:var(--paper); padding:28px; border-top:4px solid var(--red); border-radius:var(--radius); }
-.brand-card h4{ font-family:'Montserrat', sans-serif; font-weight:800; font-size:22px; text-transform:uppercase; letter-spacing:0.02em; margin-bottom:10px; }
-.brand-card p{ color:var(--steel-light); font-size:14px; }
+.brand-card{ 
+  background:#FFFFFF !important; /* Forces white background, overriding any cache */
+  color:var(--blue); 
+  padding:32px; 
+  border-radius:var(--radius); 
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 20px rgba(11,17,32,0.04);
+  text-align: center; 
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-top: 4px solid var(--red); /* Red accent line at top */
+}
+.brand-card:hover { 
+  transform: translateY(-4px); 
+  box-shadow: 0 14px 28px rgba(11,17,32,0.08); 
+}
+.brand-logo { 
+  width: 100%; 
+  height: 110px; 
+  margin-bottom: 24px; 
+  background: transparent !important; /* No grey box */
+  border: none;
+  border-radius: 0;
+  overflow: hidden; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  padding: 0;
+}
+.brand-logo img { 
+  width: auto;
+  max-width: 100%; 
+  max-height: 100%; 
+  height: auto;
+  object-fit: contain; 
+  object-position: center;
+}
+.brand-card h4{ font-family:'Montserrat', sans-serif; font-weight:800; font-size:20px; text-transform:uppercase; letter-spacing:0.02em; margin-bottom:10px; color: var(--blue); }
+.brand-card p{ color:var(--steel); font-size:14px; }
 
 /* ABOUT */
 .about-grid{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:64px; align-items:start; }
@@ -169,7 +206,8 @@ nav.primary-links a:hover, nav.primary-links a[aria-current="page"]{ border-colo
 .value-item p{ font-size:15px; color:var(--steel); padding-top:3px; }
 .value-item strong{ color:var(--blue); }
 .timeline-note{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--steel-light); margin-top:24px; }
-[10/27/2026 8:52 AM] ʙᴏɴɴɪᴇʜᴋʀ3🚫: /* CONTACT */
+
+/* CONTACT */
 .contact-grid{ display:grid; grid-template-columns:0.85fr 1.15fr; gap:56px; }
 .info-block{ display:flex; flex-direction:column; gap:28px; }
 .info-item .lbl{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--red); margin-bottom:8px; display:block; }
@@ -213,7 +251,8 @@ footer{ background:var(--blue); color:var(--steel-light); padding:56px 0 28px; }
 /* SCROLL REVEAL */
 .reveal{ opacity:0; transform:translateY(24px); transition:opacity .6s ease, transform .6s ease; }
 .reveal.in{ opacity:1; transform:none; }
-[10/27/2026 8:52 AM] ʙᴏɴɴɪᴇʜᴋʀ3🚫: /* ==========================================
+
+/* ==========================================
    MODAL (PROFESSIONAL SIDE-BY-SIDE LAYOUT)
    ========================================== */
 .modal { 
@@ -346,7 +385,8 @@ footer{ background:var(--blue); color:var(--steel-light); padding:56px 0 28px; }
 }
 .modal-add-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(242, 169, 59, 0.4); }
 .modal-add-btn.added { background: var(--green); color: #fff; box-shadow: 0 4px 15px rgba(14, 138, 79, 0.3); }
-[10/27/2026 8:52 AM] ʙᴏɴɴɪᴇʜᴋʀ3🚫: .modal-remove-btn {
+
+.modal-remove-btn {
   width: 100%; 
   display: none; 
   align-items: center; 
@@ -420,28 +460,23 @@ footer{ background:var(--blue); color:var(--steel-light); padding:56px 0 28px; }
 .hero-dark p.lede{ color:var(--steel); max-width: 46ch; }
 .hero-dark .btn-outline{ border-color:#0047AB; color:#0047AB; }
 .hero-dark .btn-outline:hover{ border-color:var(--red); color:var(--red); background: rgba(214, 40, 40, 0.05); }
-[10/27/2026 8:52 AM] ʙᴏɴɴɪᴇʜᴋʀ3🚫: /* Force text to the far left white space */
+
+/* Force text to the far left white space and away from center brushes */
 .hero-dark .hero-grid {
   display: flex; 
-  justify-content: flex-start; /* Pushes everything to the far left */
-  align-items: center; /* Centers vertically to avoid bottom brushes */
+  justify-content: flex-start; 
+  align-items: center; 
   height: 100%;
 }
 .hero-dark .hero-grid > div {
   background: none;
   padding: 0;
   border: none;
-  width: 45%; /* Forces text to only take the left 45% of the screen */
-  max-width: 450px;
+  width: 30%; /* Forces it to only take the left 30% of the screen */
+  max-width: 320px; /* Keeps it locked in the left corner */
 }
-
-/* Remove dark box and push text to the far left */
-.hero-dark .hero-grid > div {
-  background: none;
-  padding: 0;
-  border: none;
-  max-width: 500px;
-  margin-right: auto;
+.hero-dark p.lede {
+  max-width: 32ch; /* Prevents the paragraph from stretching right into the brushes */
 }
 
 /* Buttons (Shared) */
