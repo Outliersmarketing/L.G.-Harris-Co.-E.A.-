@@ -455,12 +455,33 @@ footer{ background:var(--blue); color:var(--steel-light); padding:56px 0 28px; }
 .hero p.lede{ font-size:18px; color:var(--steel); max-width:46ch; margin-bottom:32px; }
 
 /* Override text color ONLY for the Home page hero with background image */
-.hero-dark h1{ color:var(--red); margin-bottom: 16px; } /* Tough tools is Red */
-.hero-dark h1 .accent{ color:#0047AB; } /* for clean spaces is Blue */
-.hero-dark p.lede{ color:var(--steel); max-width: 46ch; }
+.hero-dark h1{ 
+  color:var(--red); 
+  margin-bottom: 16px; 
+  max-width: 300px; /* Forces the title to wrap tightly instead of stretching right */
+  font-size: clamp(32px, 4vw, 48px); /* Slightly smaller so it fits neatly */
+  line-height: 1.05;
+} 
+.hero-dark h1 .accent{ color:#0047AB; display: block; } /* Puts "cleanliness you deserve" on a new line */
+.hero-dark p.lede{ color:var(--steel); max-width: 32ch; font-size: 15px; }
 .hero-dark .btn-outline{ border-color:#0047AB; color:#0047AB; }
 .hero-dark .btn-outline:hover{ border-color:var(--red); color:var(--red); background: rgba(214, 40, 40, 0.05); }
 
+/* Force text to the far left white space and away from center brushes */
+.hero-dark .hero-grid {
+  display: flex; 
+  justify-content: flex-start; 
+  align-items: center; 
+  height: 100%;
+  padding-left: 0; /* Ensures it starts at the very edge of the left margin */
+}
+.hero-dark .hero-grid > div {
+  background: none;
+  padding: 0;
+  border: none;
+  width: 35%; 
+  max-width: 340px; 
+}
 /* Force text to the far left white space and away from center brushes */
 .hero-dark .hero-grid {
   display: flex; 
