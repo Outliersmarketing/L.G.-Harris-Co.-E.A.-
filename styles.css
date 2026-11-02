@@ -555,3 +555,68 @@ footer{ background:var(--blue); color:var(--steel-light); padding:56px 0 28px; }
   html{ scroll-behavior:auto; }
   .reveal{ transition:none; opacity:1; transform:none; }
 }
+
+/* ==========================================
+   MEGA MENU (Product Hover Dropdown)
+   ========================================== */
+.has-mega-menu { position: relative; }
+.mega-menu {
+  position: absolute;
+  top: calc(100% + 15px);
+  left: 50%;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 40px rgba(11,17,32,0.15);
+  padding: 28px;
+  width: 640px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%) translateY(10px);
+  transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s ease;
+  z-index: 200;
+}
+.has-mega-menu:hover .mega-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+.mega-menu::before {
+  content: "";
+  position: absolute;
+  top: -15px;
+  left: 0;
+  right: 0;
+  height: 15px;
+}
+.mega-menu-col h5 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--red);
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+nav.primary-links .mega-menu a {
+  display: block;
+  padding: 5px 0;
+  font-size: 13px;
+  color: var(--steel);
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  border: none;
+  transition: color 0.2s ease, padding-left 0.2s ease;
+  font-family: 'Roboto', sans-serif;
+}
+nav.primary-links .mega-menu a:hover {
+  color: var(--red);
+  border: none;
+  padding-left: 6px;
+}
