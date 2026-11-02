@@ -90,6 +90,22 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('input', applyFilters);
   }
 
+    // ==========================================
+  // MEGA MENU LINK FILTERING
+  // ==========================================
+  // Check URL for a category parameter (e.g., ?category=Wire Brush)
+  const urlParams = new URLSearchParams(window.location.search);
+  const categoryFilter = urlParams.get('category');
+  
+  if (categoryFilter && catNavBtns.length) {
+    // Find the button that matches the URL category and click it
+    catNavBtns.forEach(btn => {
+      if (btn.getAttribute('data-filter') === categoryFilter) {
+        btn.click();
+      }
+    });
+  }
+
   // Simple form handler
   const form = document.querySelector('.quote-form');
   if (form) {
