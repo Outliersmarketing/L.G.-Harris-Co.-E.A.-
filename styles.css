@@ -152,63 +152,59 @@ nav.primary-links a:hover, nav.primary-links a[aria-current="page"]{ border-colo
 .line-list li{ display:flex; align-items:baseline; gap:10px; font-family:'Montserrat', sans-serif; font-size:14.5px; font-weight:600; padding:11px 0; border-bottom:1px dashed var(--line); text-transform:uppercase; letter-spacing:0.01em; }
 .line-list li::before{ content:"—"; color:var(--red); font-weight:700; flex-shrink:0; }
 
-/* BRANDS - Unified under TOUGHe logo */
-.brand-unified {
+/* BRANDS - Unified showcase */
+.brand-showcase {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 32px;
-  padding: 40px 0 20px;
+  gap: 28px;
+  padding: 20px 0 10px;
 }
-.brand-logo-main {
-  height: 160px;
-  width: 100%;
-  max-width: 400px;
+.brand-showcase-logo {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
-  border-radius: var(--radius);
-  border: 1px solid var(--line);
-  padding: 24px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  height: 140px;
+  max-width: 320px;
+  width: 100%;
 }
-.brand-logo-main img {
+.brand-showcase-logo img {
   max-height: 100%;
   max-width: 100%;
   object-fit: contain;
+  filter: brightness(0) invert(1); /* Makes logo white to match dark background */
 }
-.brand-names {
+.brand-showcase-names {
   display: flex;
-  gap: 20px;
   align-items: center;
   justify-content: center;
+  gap: 16px;
   flex-wrap: wrap;
 }
-.brand-names span {
+.brand-showcase-names span {
   font-family: 'Montserrat', sans-serif;
-  font-weight: 800;
-  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 700;
+  font-size: clamp(18px, 2.5vw, 24px);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--red);
+  letter-spacing: 0.08em;
+  color: #fff;
 }
-.brand-names span.divider {
-  color: var(--steel);
-  font-weight: 400;
-  font-size: 20px;
+.brand-showcase-names span.dot {
+  color: var(--red);
+  font-weight: 700;
+  font-size: 16px;
 }
 
 /* Mobile */
 @media (max-width: 600px) {
-  .brand-names {
-    flex-direction: column;
-    gap: 12px;
+  .brand-showcase-names {
+    gap: 10px;
   }
-  .brand-names span.divider {
-    display: none;
+  .brand-showcase-names span {
+    font-size: 16px;
   }
+}
 }
 /* ABOUT */
 .about-grid{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:64px; align-items:start; }
