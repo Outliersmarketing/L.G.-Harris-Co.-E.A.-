@@ -156,7 +156,7 @@ nav.primary-links a:hover, nav.primary-links a[aria-current="page"]{ border-colo
 .brand-strip {
   border-top: 4px solid var(--red);
   background: #f4f4f5;
-  padding: 40px 0;
+  padding: 50px 0;
 }
 .brand-strip-inner {
   max-width: 1180px;
@@ -165,7 +165,6 @@ nav.primary-links a:hover, nav.primary-links a[aria-current="page"]{ border-colo
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
 }
 .brand-strip-col {
   flex: 1;
@@ -173,39 +172,56 @@ nav.primary-links a:hover, nav.primary-links a[aria-current="page"]{ border-colo
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 24px;
-  padding: 0 20px;
+  padding: 0 30px;
   text-align: center;
 }
 .brand-strip-col:not(:last-child) {
   border-right: 1px solid #d4d4d8;
 }
 .brand-strip-col img {
-  max-height: 90px;
-  max-width: 200px;
+  max-height: 100px;
+  max-width: 220px;
   object-fit: contain;
 }
-.brand-strip-label {
+/* Only TOUGHe column gets spacing for the sub-names */
+.brand-has-names img {
+  margin-bottom: 20px;
+}
+.brand-sub-names {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.brand-sub-names span {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.1em;
+  font-size: 15px;
   text-transform: uppercase;
+  letter-spacing: 0.06em;
   color: #111827;
 }
+.brand-sub-names span.sep {
+  color: var(--red);
+  font-weight: 700;
+}
+
+/* Mobile: stack vertically */
 @media (max-width: 700px) {
   .brand-strip-inner {
     flex-direction: column;
-    gap: 32px;
+    gap: 36px;
   }
   .brand-strip-col:not(:last-child) {
     border-right: none;
     border-bottom: 1px solid #d4d4d8;
-    padding-bottom: 32px;
+    padding-bottom: 36px;
   }
   .brand-strip-col img {
-    max-height: 70px;
+    max-height: 80px;
   }
+
 }
 /* Mobile */
 @media (max-width: 600px) {
