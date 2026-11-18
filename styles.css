@@ -670,3 +670,48 @@ nav.primary-links .mega-menu a:hover {
   border: none;
   padding-left: 6px;
 }
+
+/* FLOATING INQUIRY BUTTON */
+.floating-inquiry-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--red), #B11B1B);
+  box-shadow: 0 6px 20px rgba(214, 40, 40, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+.floating-inquiry-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 28px rgba(214, 40, 40, 0.5);
+}
+.floating-inquiry-btn svg {
+  width: 26px;
+  height: 26px;
+  fill: #fff;
+}
+.floating-inquiry-btn span {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--yellow);
+  color: var(--blue);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 11px;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+  padding: 0 4px;
+}
