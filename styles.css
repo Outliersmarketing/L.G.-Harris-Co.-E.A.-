@@ -152,50 +152,61 @@ nav.primary-links a:hover, nav.primary-links a[aria-current="page"]{ border-colo
 .line-list li{ display:flex; align-items:baseline; gap:10px; font-family:'Montserrat', sans-serif; font-size:14.5px; font-weight:600; padding:11px 0; border-bottom:1px dashed var(--line); text-transform:uppercase; letter-spacing:0.01em; }
 .line-list li::before{ content:"—"; color:var(--red); font-weight:700; flex-shrink:0; }
 
-/* BRANDS - Unified showcase */
-.brand-showcase {
+/* BRANDS - Clean horizontal strip */
+.brand-strip {
+  border-top: 4px solid var(--red);
+  background: #f4f4f5;
+  padding: 40px 0;
+}
+.brand-strip-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+.brand-strip-col {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 28px;
-  padding: 20px 0 10px;
+  gap: 24px;
+  padding: 0 20px;
+  text-align: center;
 }
-.brand-showcase-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 140px;
-  max-width: 320px;
-  width: 100%;
+.brand-strip-col:not(:last-child) {
+  border-right: 1px solid #d4d4d8;
 }
-.brand-showcase-logo img {
-  max-height: 100%;
-  max-width: 100%;
+.brand-strip-col img {
+  max-height: 90px;
+  max-width: 200px;
   object-fit: contain;
-  filter: brightness(0) invert(1); /* Makes logo white to match dark background */
 }
-.brand-showcase-names {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.brand-showcase-names span {
+.brand-strip-label {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
-  font-size: clamp(18px, 2.5vw, 24px);
+  font-size: 13px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #fff;
+  color: #111827;
 }
-.brand-showcase-names span.dot {
-  color: var(--red);
-  font-weight: 700;
-  font-size: 16px;
+@media (max-width: 700px) {
+  .brand-strip-inner {
+    flex-direction: column;
+    gap: 32px;
+  }
+  .brand-strip-col:not(:last-child) {
+    border-right: none;
+    border-bottom: 1px solid #d4d4d8;
+    padding-bottom: 32px;
+  }
+  .brand-strip-col img {
+    max-height: 70px;
+  }
 }
-
 /* Mobile */
 @media (max-width: 600px) {
   .brand-showcase-names {
