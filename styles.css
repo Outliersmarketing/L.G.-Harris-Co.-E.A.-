@@ -152,76 +152,86 @@ nav.primary-links a:hover, nav.primary-links a[aria-current="page"]{ border-colo
 .line-list li{ display:flex; align-items:baseline; gap:10px; font-family:'Montserrat', sans-serif; font-size:14.5px; font-weight:600; padding:11px 0; border-bottom:1px dashed var(--line); text-transform:uppercase; letter-spacing:0.01em; }
 .line-list li::before{ content:"—"; color:var(--red); font-weight:700; flex-shrink:0; }
 
-/* BRANDS - Clean horizontal strip */
+/* BRANDS - Individual cards with spacing */
 .brand-strip {
   border-top: 4px solid var(--red);
   background: #f4f4f5;
-  padding: 50px 0;
+  padding: 60px 0;
 }
 .brand-strip-inner {
-  max-width: 1180px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 0 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
 }
-.brand-strip-col {
-  flex: 1;
+.brand-card-box {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 48px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0 30px;
-  text-align: center;
+  min-height: 200px;
+  box-shadow: 0 6px 20px rgba(11, 17, 32, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.brand-strip-col:not(:last-child) {
-  border-right: 1px solid #d4d4d8;
+.brand-card-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(11, 17, 32, 0.12);
 }
-.brand-strip-col img {
-  max-height: 100px;
-  max-width: 220px;
+.brand-card-box img {
+  max-height: 90px;
+  max-width: 200px;
   object-fit: contain;
 }
-/* Only TOUGHe column gets spacing for the sub-names */
-.brand-has-names img {
-  margin-bottom: 20px;
-}
-.brand-sub-names {
+/* Only the TOUGHe card shows the sub-names */
+.brand-card-box .brand-sub-names {
+  margin-top: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 .brand-sub-names span {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
-  font-size: 15px;
+  font-size: 14px;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: #111827;
 }
 .brand-sub-names span.sep {
   color: var(--red);
-  font-weight: 700;
+}
+
+/* Tablet: 3 columns still, tighter gaps */
+@media (max-width: 900px) {
+  .brand-strip-inner {
+    gap: 20px;
+  }
+  .brand-card-box {
+    padding: 36px 16px;
+    min-height: 170px;
+  }
+  .brand-card-box img {
+    max-height: 70px;
+  }
 }
 
 /* Mobile: stack vertically */
-@media (max-width: 700px) {
+@media (max-width: 640px) {
+  .brand-strip {
+    padding: 40px 0;
+  }
   .brand-strip-inner {
-    flex-direction: column;
-    gap: 36px;
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
-  .brand-strip-col:not(:last-child) {
-    border-right: none;
-    border-bottom: 1px solid #d4d4d8;
-    padding-bottom: 36px;
-  }
-  .brand-strip-col img {
-    max-height: 80px;
-  }
-
+   
 }
 /* Mobile */
 @media (max-width: 600px) {
