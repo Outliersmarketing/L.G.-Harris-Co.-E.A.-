@@ -1,350 +1,388 @@
-// Mobile nav toggle
-document.addEventListener('DOMContentLoaded', () => {
-  const hamburger = document.querySelector('.hamburger');
-  const panel = document.querySelector('.mobile-panel');
-  if (hamburger && panel) {
-    hamburger.addEventListener('click', () => {
-      panel.classList.toggle('open');
+/* ============================================
+   L.G. HARRIS & CO. — script.js
+   Advanced Side-by-Side Product Popup for ALL categories
+   ============================================ */
+
+(function () {
+  'use strict';
+
+  /* ---------- MOBILE MENU ---------- */
+  var hamburger = document.querySelector('.hamburger');
+  var mobilePanel = document.querySelector('.mobile-panel');
+  if (hamburger && mobilePanel) {
+    hamburger.addEventListener('click', function () {
+      mobilePanel.classList.toggle('open');
     });
   }
 
-  // Scroll reveal
-  const revealEls = document.querySelectorAll('.reveal');
+  /* ---------- SCROLL REVEAL ---------- */
+  var revealEls = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window && revealEls.length) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in');
-          io.unobserve(entry.target);
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
         }
       });
-    }, { threshold: 0.15 });
-    revealEls.forEach(el => io.observe(el));
+    }, { threshold: 0.12 });
+    revealEls.forEach(function (el) { io.observe(el); });
   } else {
-    revealEls.forEach(el => el.classList.add('in'));
+    revealEls.forEach(function (el) { el.classList.add('in'); });
   }
 
-  // Count-up stats
-  const stats = document.querySelectorAll('.stat .num[data-target]');
-  if ('IntersectionObserver' in window && stats.length) {
-    const statIO = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          animateCount(entry.target);
-          statIO.unobserve(entry.target);
-        }
+  /* ---------- STATS COUNTER ---------- */
+  var statsNums = document.querySelectorAll('.stat .num[data-target]');
+  if (statsNums.length) {
+    var counterIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var el = e.target;
+        var target = parseInt(el.getAttribute('data-target'), 10);
+        var suffix = el.getAttribute('data-suffix') || '';
+        var current = 0;
+        var step = Math.max(1, Math.ceil(target / 60));
+        var timer = setInterval(function () {
+          current += step;
+          if (current >= target) { current = target; clearInterval(timer); }
+          el.textContent = current + suffix;
+        }, 25);
+        counterIO.unobserve(el);
       });
     }, { threshold: 0.4 });
-    stats.forEach(el => statIO.observe(el));
-  } else {
-    stats.forEach(el => animateCount(el));
+    statsNums.forEach(function (el) { counterIO.observe(el); });
   }
 
-  function animateCount(el) {
-    const target = parseInt(el.getAttribute('data-target'), 10);
-    const suffix = el.getAttribute('data-suffix') || '';
-    const duration = 1200;
-    const start = performance.now();
-    function tick(now) {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      el.textContent = Math.round(eased * target) + suffix;
-      if (progress < 1) requestAnimationFrame(tick);
+  /* ---------- INQUIRY LIST (CART) STORAGE ---------- */
+  function getCart() {
+    try {
+      return JSON.parse(localStorage.getItem('harrisInquiry') || '[]');
+    } catch (e) {
+      return [];
     }
-    requestAnimationFrame(tick);
+  }
+  function saveCart(cart) {
+    localStorage.setItem('harrisInquiry', JSON.stringify(cart));
+    updateCartBadges();
+  }
+  function updateCartBadges() {
+    var cart = getCart();
+    var n = cart.length;
+    var navCount = document.getElementById('navCartCount');
+    var inquiryCount = document.getElementById('inquiryCount');
+    if (navCount) navCount.textContent = n;
+    if (inquiryCount) inquiryCount.textContent = n;
+  }
+  updateCartBadges();
+
+  function cartIndexOf(name) {
+    var cart = getCart();
+    for (var i = 0; i < cart.length; i++) {
+      if (cart[i].name === name) return i;
+    }
+    return -1;
   }
 
-  // Product category browser
-  const catNavBtns = document.querySelectorAll('.cat-nav button');
-  const catTiles = document.querySelectorAll('.cat-tile');
-  const searchInput = document.getElementById('cat-search');
-  const resultCount = document.getElementById('result-count');
-  let activeFilter = 'all';
+  /* ---------- PRODUCT TILES & FILTERING ---------- */
+  var tiles = Array.prototype.slice.call(document.querySelectorAll('.cat-tile'));
+  var catNavBtns = Array.prototype.slice.call(document.querySelectorAll('.cat-nav button'));
+  var searchInput = document.getElementById('searchInput');
+  var countNote = document.getElementById('countNote');
+  var currentFilter = 'all';
+  var currentSearch = '';
 
   function applyFilters() {
-    const query = (searchInput ? searchInput.value.trim().toLowerCase() : '');
-    let visible = 0;
-    catTiles.forEach(tile => {
-      const matchesFilter = activeFilter === 'all' || tile.getAttribute('data-cat') === activeFilter;
-      const matchesSearch = !query || tile.getAttribute('data-name').toLowerCase().includes(query);
-      const show = matchesFilter && matchesSearch;
-      tile.classList.toggle('hidden', !show);
-      if (show) visible++;
+    var visible = 0;
+    tiles.forEach(function (tile) {
+      var cat = tile.getAttribute('data-cat') || '';
+      var name = (tile.getAttribute('data-name') || '').toLowerCase();
+      var code = (tile.getAttribute('data-code') || '').toLowerCase();
+      var matchCat = (currentFilter === 'all' || cat === currentFilter);
+      var matchSearch = (!currentSearch || name.indexOf(currentSearch) !== -1 || code.indexOf(currentSearch) !== -1);
+      if (matchCat && matchSearch) {
+        tile.classList.remove('hidden');
+        visible++;
+      } else {
+        tile.classList.add('hidden');
+      }
     });
-    if (resultCount) {
-      resultCount.textContent = visible + (visible === 1 ? ' Category' : ' Categories');
+    if (countNote) {
+      if (currentFilter === 'all' && !currentSearch) {
+        countNote.textContent = 'Showing all ' + visible + ' products';
+      } else if (currentFilter !== 'all' && !currentSearch) {
+        countNote.textContent = visible + ' product' + (visible !== 1 ? 's' : '') + ' in ' + currentFilter;
+      } else {
+        countNote.textContent = visible + ' product' + (visible !== 1 ? 's' : '') + ' found';
+      }
     }
   }
 
   if (catNavBtns.length) {
-    catNavBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        catNavBtns.forEach(b => b.classList.remove('active'));
+    catNavBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        catNavBtns.forEach(function (b) { b.classList.remove('active'); });
         btn.classList.add('active');
-        activeFilter = btn.getAttribute('data-filter');
+        currentFilter = btn.getAttribute('data-filter') || 'all';
         applyFilters();
       });
     });
   }
+
   if (searchInput) {
-    searchInput.addEventListener('input', applyFilters);
-  }
-
-    // ==========================================
-  // MEGA MENU LINK FILTERING
-  // ==========================================
-  // Check URL for a category parameter (e.g., ?category=Wire Brush)
-  const urlParams = new URLSearchParams(window.location.search);
-  const categoryFilter = urlParams.get('category');
-  
-  if (categoryFilter && catNavBtns.length) {
-    // Find the button that matches the URL category and click it
-    catNavBtns.forEach(btn => {
-      if (btn.getAttribute('data-filter') === categoryFilter) {
-        btn.click();
-      }
+    searchInput.addEventListener('input', function () {
+      currentSearch = searchInput.value.trim().toLowerCase();
+      applyFilters();
     });
   }
 
-  // Simple form handler
-  const form = document.querySelector('.quote-form');
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const name = form.querySelector('#name').value.trim();
-      const company = form.querySelector('#company').value.trim();
-      const need = form.querySelector('#need').value.trim();
-      const subject = `Quote Request — ${name}${company ? ' / ' + company : ''}`;
-      const body = `Name: ${name}\nCompany: ${company}\n\nWhat's needed:\n${need}`;
-      window.location.href = `mailto:sales@harrisea.net?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    });
+  /* ---------- ADVANCED MODAL ---------- */
+  var modal = document.getElementById('productModal');
+  var modalImg = document.getElementById('modalImg');
+  var modalTitle = document.getElementById('modalTitle');
+  var modalCode = document.getElementById('modalCode');
+  var modalPack = document.getElementById('modalPack');
+  var modalCat = document.getElementById('modalCat');
+  var qtyInput = document.getElementById('qtyInput');
+  var qtyMinus = document.getElementById('qtyMinus');
+  var qtyPlus = document.getElementById('qtyPlus');
+  var modalAddBtn = document.getElementById('modalAddBtn');
+  var modalRemoveBtn = document.getElementById('modalRemoveBtn');
+  var modalProceedBtn = document.getElementById('modalProceedBtn');
+  var relatedGrid = document.getElementById('relatedGrid');
+  var modalRelated = document.getElementById('modalRelated');
+
+  var currentTile = null;
+
+  function openModal(tile) {
+    currentTile = tile;
+    var img = tile.querySelector('img');
+    var name = tile.getAttribute('data-name') || '';
+    var code = tile.getAttribute('data-code') || '';
+    var pack = tile.getAttribute('data-pack') || '';
+    var cat = tile.getAttribute('data-cat') || '';
+
+    if (modalImg && img) {
+      modalImg.src = img.src;
+      modalImg.alt = name;
+    }
+    if (modalTitle) modalTitle.textContent = name;
+    if (modalCode) modalCode.textContent = code;
+    if (modalPack) modalPack.textContent = pack;
+    if (modalCat) modalCat.textContent = cat;
+
+    // Reset quantity
+    if (qtyInput) qtyInput.value = '1';
+
+    // Toggle Add/Remove based on cart
+    updateModalButtons(name);
+
+    // Show related products (same category, excluding current)
+    showRelated(cat, name);
+
+    // Show modal
+    if (modal) {
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
   }
 
-  // ACCORDION FAQ
-  const faqQuestions = document.querySelectorAll('.faq-q');
-  if (faqQuestions.length) {
-    faqQuestions.forEach(q => {
-      q.addEventListener('click', () => {
-        const item = q.parentElement;
-        document.querySelectorAll('.faq-item').forEach(otherItem => {
-          if (otherItem !== item) otherItem.classList.remove('active');
-        });
-        item.classList.toggle('active');
-      });
-    });
+  function closeModal() {
+    if (modal) {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    currentTile = null;
   }
 
-  // ==========================================
-  // INQUIRY CART SYSTEM (LocalStorage & Modal)
-  // ==========================================
-  let inquiryList = JSON.parse(localStorage.getItem('inquiryList')) || [];
-  const navCartCount = document.getElementById('navCartCount');
-  
-  let currentModalItem = null;
-  let currentModalCode = null;
-  let currentModalPack = null;
-  let currentModalCat = null;
-
-  function updateCartCounter() {
-    if (navCartCount) {
-      navCartCount.textContent = inquiryList.length;
-      if (inquiryList.length > 0) {
-        navCartCount.style.display = 'flex';
+  function updateModalButtons(name) {
+    var idx = cartIndexOf(name);
+    if (modalAddBtn && modalRemoveBtn) {
+      if (idx !== -1) {
+        // Already in cart
+        modalAddBtn.style.display = 'none';
+        modalRemoveBtn.style.display = 'inline-flex';
+        modalProceedBtn.style.display = 'inline-flex';
+        if (qtyInput) qtyInput.value = getCart()[idx].qty;
       } else {
-        navCartCount.style.display = 'none';
+        modalAddBtn.style.display = 'inline-flex';
+        modalRemoveBtn.style.display = 'none';
+        modalProceedBtn.style.display = 'none';
       }
     }
   }
 
-  // IMAGE MODAL ELEMENTS (Advanced)
-  const modal = document.getElementById("imageModal");
-  const modalImg = document.getElementById("modalImg");
-  const modalClose = document.querySelector(".modal-close");
-  const modalAddBtn = document.getElementById("modalAddBtn");
-  const modalRemoveBtn = document.getElementById("modalRemoveBtn");
-  const modalTitle = document.getElementById("modalTitle");
-  const modalCode = document.getElementById("modalCode");
-  const modalPack = document.getElementById("modalPack");
-  const modalCat = document.getElementById("modalCat");
-  const qtyInput = document.getElementById("qtyInput");
-  const qtyMinus = document.getElementById("qtyMinus");
-  const qtyPlus = document.getElementById("qtyPlus");
-  const modalRelatedGrid = document.getElementById('modalRelatedGrid');
-  
-  // SIMPLE MODAL ELEMENTS (Basic)
-  const simpleModal = document.getElementById("simpleModal");
-  const simpleImg = document.getElementById("simpleImg");
-  const simpleClose = document.querySelector(".simple-modal-close");
+  function showRelated(cat, currentName) {
+    if (!relatedGrid || !modalRelated) return;
+    relatedGrid.innerHTML = '';
+    var related = tiles.filter(function (t) {
+      return t.getAttribute('data-cat') === cat && t.getAttribute('data-name') !== currentName;
+    });
+    // Shuffle and take 4
+    related.sort(function () { return Math.random() - 0.5; });
+    related = related.slice(0, 4);
 
-  const productImages = document.querySelectorAll('.cat-tile .ph-image img');
-
-  // Function to open Advanced modal and populate data
-  function openProductModal(tile) {
-    currentModalItem = tile.getAttribute('data-name');
-    currentModalCode = tile.getAttribute('data-code') || 'N/A';
-    currentModalPack = tile.getAttribute('data-pack') || 'N/A';
-    currentModalCat = tile.getAttribute('data-cat') || 'N/A';
-    
-    const img = tile.querySelector('img');
-    
-    modal.style.display = "flex";
-    modalImg.src = img.src;
-    modalTitle.textContent = currentModalItem;
-    modalCode.textContent = currentModalCode;
-    modalPack.textContent = currentModalPack;
-    modalCat.textContent = currentModalCat;
-    qtyInput.value = 1; 
-    
-    const exists = inquiryList.some(i => i.name === currentModalItem);
-    if (exists) {
-      modalAddBtn.textContent = 'Update Quantity';
-      modalAddBtn.classList.add('added');
-      modalRemoveBtn.style.display = 'inline-flex';
-    } else {
-      modalAddBtn.textContent = 'Add to Inquiry List';
-      modalAddBtn.classList.remove('added');
-      modalRemoveBtn.style.display = 'none';
+    if (related.length === 0) {
+      modalRelated.style.display = 'none';
+      return;
     }
+    modalRelated.style.display = 'block';
 
-    renderFeaturedProducts(tile);
-  }
-
-  // Function to render the 4 related items
-  function renderFeaturedProducts(currentTile) {
-    if (!modalRelatedGrid) return;
-    
-    modalRelatedGrid.innerHTML = ''; 
-    const currentCat = currentTile.getAttribute('data-cat');
-    const currentName = currentTile.getAttribute('data-name');
-    
-    const relatedItems = Array.from(document.querySelectorAll('.cat-tile')).filter(t => {
-      return t.getAttribute('data-cat') === currentCat && t.getAttribute('data-name') !== currentName;
-    }).slice(0, 4);
-
-    if (relatedItems.length > 0) {
-      document.getElementById('modalRelatedWrap').style.display = 'block';
-      relatedItems.forEach(item => {
-        const itemImg = item.querySelector('img').src;
-        const itemName = item.getAttribute('data-name');
-        
-        const div = document.createElement('div');
-        div.className = 'related-item';
-        div.innerHTML = `<img src="${itemImg}" alt="${itemName}"><span>${itemName}</span>`;
-        
-        div.addEventListener('click', () => {
-          openProductModal(item);
-        });
-        
-        modalRelatedGrid.appendChild(div);
+    related.forEach(function (t) {
+      var img = t.querySelector('img');
+      var name = t.getAttribute('data-name') || '';
+      var div = document.createElement('div');
+      div.className = 'related-item';
+      div.innerHTML = '<img src="' + (img ? img.src : '') + '" alt="' + name + '"><span>' + name + '</span>';
+      div.addEventListener('click', function () {
+        openModal(t);
       });
-    } else {
-      document.getElementById('modalRelatedWrap').style.display = 'none';
-    }
-  }
-
-  // Attach click listeners to all product images
-  if (productImages.length) {
-    productImages.forEach(img => {
-      img.style.cursor = 'pointer'; 
-      img.addEventListener('click', () => {
-        const tile = img.closest('.cat-tile');
-        const category = tile.getAttribute('data-cat');
-
-        // ONLY USE ADVANCED MODAL FOR SCRUBBING BRUSHES
-        if (category === 'Scrubbing Brushes') {
-          openProductModal(tile);
-        } else {
-          // USE SIMPLE MODAL FOR EVERYTHING ELSE
-          simpleModal.style.display = "flex";
-          simpleImg.src = img.src;
-        }
-      });
+      relatedGrid.appendChild(div);
     });
   }
 
-  // Advanced Modal Listeners
-  if (modalClose) {
-    modalClose.addEventListener('click', () => { modal.style.display = "none"; });
-  }
+  // Close handlers
   if (modal) {
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) { modal.style.display = "none"; }
+    var closeBtn = modal.querySelector('.modal-close');
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModal();
     });
   }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal && modal.style.display === 'flex') closeModal();
+  });
 
-  // Simple Modal Listeners
-  if (simpleClose) {
-    simpleClose.addEventListener('click', () => { simpleModal.style.display = "none"; });
-  }
-  if (simpleModal) {
-    simpleModal.addEventListener('click', (e) => {
-      if (e.target === simpleModal) { simpleModal.style.display = "none"; }
-    });
-  }
-
-  // Quantity Listeners
+  // Quantity controls
   if (qtyMinus) {
-    qtyMinus.addEventListener('click', () => {
-      let val = parseInt(qtyInput.value);
-      if (val > 1) qtyInput.value = val - 1;
+    qtyMinus.addEventListener('click', function () {
+      var v = parseInt(qtyInput.value, 10) || 1;
+      if (v > 1) qtyInput.value = v - 1;
     });
   }
   if (qtyPlus) {
-    qtyPlus.addEventListener('click', () => {
-      let val = parseInt(qtyInput.value);
-      qtyInput.value = val + 1;
+    qtyPlus.addEventListener('click', function () {
+      var v = parseInt(qtyInput.value, 10) || 1;
+      qtyInput.value = v + 1;
+    });
+  }
+  if (qtyInput) {
+    qtyInput.addEventListener('change', function () {
+      var v = parseInt(qtyInput.value, 10);
+      if (isNaN(v) || v < 1) qtyInput.value = '1';
     });
   }
 
-  // Handle "Add to Inquiry" click
+  // Add to inquiry list
   if (modalAddBtn) {
-    modalAddBtn.addEventListener('click', () => {
-      if (currentModalItem) {
-        const qty = parseInt(qtyInput.value) || 1;
-        const itemObj = { name: currentModalItem, code: currentModalCode, pack: currentModalPack, qty: qty };
-        
-        const existingIndex = inquiryList.findIndex(i => i.name === currentModalItem);
-        if (existingIndex > -1) {
-          inquiryList[existingIndex].qty = qty; 
-          modalAddBtn.textContent = '✓ Quantity Updated!';
-        } else {
-          inquiryList.push(itemObj);
-          modalAddBtn.textContent = '✓ Added to List';
-          modalAddBtn.classList.add('added');
-        }
-        
-        modalRemoveBtn.style.display = 'inline-flex'; 
-        localStorage.setItem('inquiryList', JSON.stringify(inquiryList));
-        updateCartCounter();
-      }
-    });
-  }
+    modalAddBtn.addEventListener('click', function () {
+      if (!currentTile) return;
+      var name = currentTile.getAttribute('data-name') || '';
+      var code = currentTile.getAttribute('data-code') || '';
+      var pack = currentTile.getAttribute('data-pack') || '';
+      var cat = currentTile.getAttribute('data-cat') || '';
+      var img = currentTile.querySelector('img');
+      var qty = parseInt(qtyInput.value, 10) || 1;
 
-  // Handle "Remove from List" click
-  if (modalRemoveBtn) {
-    modalRemoveBtn.addEventListener('click', () => {
-      if (currentModalItem) {
-        inquiryList = inquiryList.filter(i => i.name !== currentModalItem);
-        localStorage.setItem('inquiryList', JSON.stringify(inquiryList));
-        updateCartCounter();
-        
-        modalAddBtn.textContent = 'Add to Inquiry List';
+      var cart = getCart();
+      cart.push({
+        name: name, code: code, pack: pack, cat: cat,
+        img: img ? img.src : '', qty: qty
+      });
+      saveCart(cart);
+
+      // Visual feedback
+      modalAddBtn.classList.add('added');
+      modalAddBtn.textContent = '✓ Added to Inquiry List';
+      setTimeout(function () {
+        updateModalButtons(name);
         modalAddBtn.classList.remove('added');
-        modalRemoveBtn.style.display = 'none';
+        modalAddBtn.textContent = 'Add to Inquiry List';
+      }, 1200);
+    });
+  }
+
+  // Remove from inquiry list
+  if (modalRemoveBtn) {
+    modalRemoveBtn.addEventListener('click', function () {
+      if (!currentTile) return;
+      var name = currentTile.getAttribute('data-name') || '';
+      var cart = getCart();
+      var idx = cartIndexOf(name);
+      if (idx !== -1) {
+        cart.splice(idx, 1);
+        saveCart(cart);
+      }
+      updateModalButtons(name);
+    });
+  }
+
+  // Proceed to contact
+  if (modalProceedBtn) {
+    modalProceedBtn.addEventListener('click', function () {
+      // Update qty in cart before leaving
+      if (currentTile) {
+        var name = currentTile.getAttribute('data-name') || '';
+        var idx = cartIndexOf(name);
+        if (idx !== -1) {
+          var cart = getCart();
+          cart[idx].qty = parseInt(qtyInput.value, 10) || 1;
+          saveCart(cart);
+        }
+      }
+      closeModal();
+      window.location.href = 'contact-us.html';
+    });
+  }
+
+  /* ---------- TILE CLICK → OPEN MODAL ---------- */
+  tiles.forEach(function (tile) {
+    tile.style.cursor = 'pointer';
+    tile.addEventListener('click', function () {
+      openModal(tile);
+    });
+  });
+
+  /* ---------- MEGA MENU URL PARAMETER FILTERING ---------- */
+  var urlParams = new URLSearchParams(window.location.search);
+  var categoryFilter = urlParams.get('category');
+  if (categoryFilter && catNavBtns.length) {
+    catNavBtns.forEach(function (btn) {
+      if (btn.getAttribute('data-filter') === categoryFilter) {
+        btn.click();
+        // Scroll to product grid
+        setTimeout(function () {
+          var grid = document.querySelector('.browser-main');
+          if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 200);
       }
     });
   }
 
-  updateCartCounter();
-
-  const needTextarea = document.getElementById('need');
-  if (needTextarea && inquiryList.length > 0) {
-    let formText = "I would like to inquire about the following items:\n\n";
-    inquiryList.forEach(item => {
-      formText += `- ${item.qty} x ${item.name} (Code: ${item.code}, Pack: ${item.pack})\n`;
-    });
-    formText += "\nPlease provide pricing and availability. Thank you.";
-    needTextarea.value = formText;
+  /* ---------- CONTACT PAGE: AUTO-FILL INQUIRY LIST ---------- */
+  var quoteForm = document.querySelector('.quote-form');
+  if (quoteForm && document.body.getAttribute('data-page') === 'contact') {
+    fillContactInquiry();
+  }
+  // Also check by looking for a message textarea
+  var msgField = document.getElementById('message') || document.querySelector('textarea[name="message"]');
+  if (msgField && getCart().length > 0 && !msgField.value) {
+    fillContactInquiry();
   }
 
-});
+  function fillContactInquiry() {
+    var cart = getCart();
+    if (cart.length === 0) return;
+    var textarea = document.querySelector('textarea') || msgField;
+    if (!textarea) return;
+    var lines = ['I would like to request a quote for the following items:', ''];
+    cart.forEach(function (item, i) {
+      lines.push((i + 1) + '. ' + item.name + ' (Code: ' + item.code + ', Pack: ' + item.pack + ') — Qty: ' + item.qty);
+    });
+    lines.push('', 'Please contact me with wholesale pricing. Thank you.');
+    textarea.value = lines.join('\n');
+  }
+
+  /* ---------- INITIAL FILTER RUN ---------- */
+  applyFilters();
+
+})();
