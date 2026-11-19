@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="styles.css">
 <style>
   /* OVERRIDE — forces image LEFT, text RIGHT, side by side */
+  /* CRITICAL FIX: make reveal content always visible (in case JS fails) */
+  .reveal{ opacity:1 !important; transform:none !important; }
   .about-grid{
     display:grid !important;
     grid-template-columns: 1fr 1.3fr !important;
@@ -15,8 +17,8 @@
     align-items:center !important;
   }
   .about-media{
-    aspect-ratio: 4/3 !important;
-    max-height:420px !important;
+    aspect-ratio: 9/16 !important;
+    max-height:680px !important;
     width:100% !important;
     overflow:hidden !important;
     border-radius:8px !important;
@@ -50,7 +52,10 @@
       grid-template-columns:1fr !important;
       gap:32px !important;
     }
-    .about-media{ max-height:300px !important; }
+    .about-media{ aspect-ratio:9/16 !important; max-height:560px !important; }
+  }
+  @media (max-width:640px){
+    .about-media{ max-height:480px !important; }
   }
 </style>
 </head>
