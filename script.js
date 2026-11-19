@@ -359,27 +359,79 @@
   }
 
   /* ---------- CONTACT PAGE: AUTO-FILL INQUIRY LIST ---------- */
-  var quoteForm = document.querySelector('.quote-form');
-  if (quoteForm && document.body.getAttribute('data-page') === 'contact') {
-    fillContactInquiry();
-  }
-  // Also check by looking for a message textarea
-  var msgField = document.getElementById('message') || document.querySelector('textarea[name="message"]');
-  if (msgField && getCart().length > 0 && !msgField.value) {
-    fillContactInquiry();
+  // Find ANY textarea on the page (works regardless of id/name)
+  var contactTextarea = document.querySelector('textarea');
+
+  // Render visible inquiry summary + auto-fill the textarea
+  if (contactTextarea) {
+    var cart = getCart();
+    if (cart.length > 0) {
+      // 1) Render a visible summary box above the form
+      renderInquirySummary(cart);
+      // 2) Auto-fill the textarea
+      fillTextarea(contactTextarea, cart);
+    }
   }
 
-  function fillContactInquiry() {
-    var cart = getCart();
-    if (cart.length === 0) return;
-    var textarea = document.querySelector('textarea') || msgField;
-    if (!textarea) return;
+  function renderInquirySummary(cart) {
+    // Check if summary already exists
+    if (document.getElementById('inquirySummary')) return;
+    var form = document.querySelector('.quote-form') || contactTextarea.closest('form');
+    if (!form) return;
+
+    var summary = document.createElement('div');
+    summary.id = 'inquirySummary';
+    summary.style.cssText = 'background:#f8fafc; border:1px solid rgba(11,17,32,0.10); border-radius:6px; padding:20px; margin-bottom:24px;';
+    var html = '<div style="font-family:\'Montserrat\',sans-serif; font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:0.05em; color:#D62828; margin-bottom:14px;">Your Inquiry List (' + cart.length + ' items)</div>';
+    html += '<div style="display:flex; flex-direction:column; gap:8px;">';
+    cart.forEach(function (item, i) {
+      html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px dashed rgba(11,17,32,0.10); font-size:14px;">';
+      html += '<span style="color:#0B1120;"><strong>' + (i + 1) + '.</strong> ' + item.name + ' <span style="color:#94A3B8; font-family:\'IBM Plex Mono\',monospace; font-size:12px;">(' + item.code + ' · ' + item.pack + ')</span></span>';
+      html += '<span style="font-family:\'IBM Plex Mono\',monospace; font-weight:600; color:#0B1120;">Qty: ' + item.qty + '</span>';
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '<button type="button" id="clearInquiryBtn" style="margin-top:14px; background:transparent; border:1px solid #D62828; color:#D62828; padding:8px 16px; border-radius:4px; font-family:\'Montserrat\',sans-serif; font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:0.05em; cursor:pointer;">Clear Inquiry List</button>';
+    summary.innerHTML = html;
+
+    // Insert BEFORE the form
+    form.parentNode.insertBefore(summary, form);
+
+    // Clear button handler
+    var clearBtn = document.getElementById('clearInquiryBtn');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function () {
+        localStorage.removeItem('harrisInquiry');
+        updateCartBadges();
+        summary.remove();
+        if (contactTextarea) contactTextarea.value = '';
+      });
+    }
+  }
+
+  function fillTextarea(textarea, cart) {
     var lines = ['I would like to request a quote for the following items:', ''];
     cart.forEach(function (item, i) {
       lines.push((i + 1) + '. ' + item.name + ' (Code: ' + item.code + ', Pack: ' + item.pack + ') — Qty: ' + item.qty);
     });
     lines.push('', 'Please contact me with wholesale pricing. Thank you.');
     textarea.value = lines.join('\n');
+  }
+
+  // Make the form submit via mailto with cart contents
+  var contactForm = document.querySelector('.quote-form');
+  if (contactForm) {
+    contactForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var nameVal = (document.getElementById('name') || {}).value || '';
+      var companyVal = (document.getElementById('company') || {}).value || '';
+      var needVal = contactTextarea ? contactTextarea.value : '';
+      var subject = 'Wholesale Quote Request' + (companyVal ? ' — ' + companyVal : '');
+      var body = 'Name: ' + nameVal + '\n';
+      if (companyVal) body += 'Company: ' + companyVal + '\n';
+      body += '\n' + needVal;
+      window.location.href = 'mailto:sales@harrisea.net?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    });
   }
 
   /* ---------- INITIAL FILTER RUN ---------- */
