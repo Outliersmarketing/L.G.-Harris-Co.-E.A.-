@@ -15,6 +15,24 @@
     });
   }
 
+  /* ---------- FAQ ACCORDION ---------- */
+  var faqQuestions = document.querySelectorAll('.faq-q');
+  if (faqQuestions.length) {
+    faqQuestions.forEach(function (q) {
+      q.addEventListener('click', function () {
+        var item = q.closest('.faq-item');
+        if (!item) return;
+        // Close all other items (accordion behavior)
+        var allItems = document.querySelectorAll('.faq-item');
+        allItems.forEach(function (other) {
+          if (other !== item) other.classList.remove('active');
+        });
+        // Toggle the clicked item
+        item.classList.toggle('active');
+      });
+    });
+  }
+
   /* ---------- SCROLL REVEAL ---------- */
   var revealEls = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window && revealEls.length) {
