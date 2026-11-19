@@ -330,7 +330,7 @@
         }
       }
       closeModal();
-      window.location.href = 'contact-us.html';
+      window.location.href = 'cart.html';
     });
   }
 
@@ -432,6 +432,137 @@
       body += '\n' + needVal;
       window.location.href = 'mailto:sales@harrisea.net?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     });
+  }
+
+  /* ---------- REDIRECT CART BUTTONS TO CART PAGE ---------- */
+  // On every page except cart.html itself, make the cart icon + floating button go to cart.html
+  if (window.location.pathname.indexOf('cart.html') === -1) {
+    var cartLinks = document.querySelectorAll('.nav-cart, .floating-inquiry-btn');
+    cartLinks.forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        window.location.href = 'cart.html';
+      });
+    });
+  }
+
+  /* ---------- CART PAGE: RENDER ITEMS + ENQUIRY FORM ---------- */
+  var cartItemsContainer = document.getElementById('cartItems');
+  if (cartItemsContainer) {
+    renderCartPage();
+
+    function renderCartPage() {
+      var cart = getCart();
+      var cartFilled = document.getElementById('cartFilled');
+      var cartEmpty = document.getElementById('cartEmpty');
+
+      if (cart.length === 0) {
+        // Show empty state
+        if (cartFilled) cartFilled.style.display = 'none';
+        if (cartEmpty) cartEmpty.style.display = 'block';
+        return;
+      }
+
+      // Show filled cart
+      if (cartFilled) cartFilled.style.display = 'grid';
+      if (cartEmpty) cartEmpty.style.display = 'none';
+
+      // Update item count
+      var countEl = document.getElementById('cartItemCount');
+      if (countEl) countEl.textContent = cart.length + (cart.length === 1 ? ' Item' : ' Items');
+      var summaryTotal = document.getElementById('summaryTotal');
+      if (summaryTotal) {
+        var totalQty = cart.reduce(function (sum, item) { return sum + (item.qty || 1); }, 0);
+        summaryTotal.textContent = totalQty;
+      }
+
+      // Render each item
+      cartItemsContainer.innerHTML = '';
+      cart.forEach(function (item, index) {
+        var row = document.createElement('div');
+        row.className = 'cart-item';
+        row.innerHTML =
+          '<div class="cart-item-details">' +
+            '<div class="cart-item-img"><img src="' + (item.img || '') + '" alt="' + (item.name || '') + '"></div>' +
+            '<div class="cart-item-info">' +
+              '<h3>' + (item.name || '') + '</h3>' +
+              '<div class="code">Code: <strong>' + (item.code || '') + '</strong> · Pack: ' + (item.pack || '') + '</div>' +
+              '<button class="cart-remove" data-index="' + index + '">Remove</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="qty-stepper">' +
+            '<button class="qty-dec" data-index="' + index + '">&lsaquo;</button>' +
+            '<input type="number" value="' + (item.qty || 1) + '" min="1" data-index="' + index + '" readonly>' +
+            '<button class="qty-inc" data-index="' + index + '">&rsaquo;</button>' +
+          '</div>';
+        cartItemsContainer.appendChild(row);
+      });
+
+      // Wire up remove buttons
+      var removeBtns = cartItemsContainer.querySelectorAll('.cart-remove');
+      removeBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var idx = parseInt(btn.getAttribute('data-index'), 10);
+          var c = getCart();
+          c.splice(idx, 1);
+          saveCart(c);
+          renderCartPage();
+        });
+      });
+
+      // Wire up quantity steppers
+      var decBtns = cartItemsContainer.querySelectorAll('.qty-dec');
+      var incBtns = cartItemsContainer.querySelectorAll('.qty-inc');
+      decBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var idx = parseInt(btn.getAttribute('data-index'), 10);
+          var c = getCart();
+          if (c[idx] && c[idx].qty > 1) {
+            c[idx].qty--;
+            saveCart(c);
+            renderCartPage();
+          }
+        });
+      });
+      incBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var idx = parseInt(btn.getAttribute('data-index'), 10);
+          var c = getCart();
+          if (c[idx]) {
+            c[idx].qty = (c[idx].qty || 1) + 1;
+            saveCart(c);
+            renderCartPage();
+          }
+        });
+      });
+
+      // Wire up enquiry form submission
+      var enquiryForm = document.getElementById('enquiryForm');
+      if (enquiryForm && !enquiryForm._wired) {
+        enquiryForm._wired = true;
+        enquiryForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var name = (document.getElementById('enqName') || {}).value || '';
+          var email = (document.getElementById('enqEmail') || {}).value || '';
+          var phone = (document.getElementById('enqPhone') || {}).value || '';
+          var company = (document.getElementById('enqCompany') || {}).value || '';
+          var items = getCart();
+
+          var subject = 'Wholesale Enquiry' + (company ? ' — ' + company : '');
+          var body = 'Name: ' + name + '\n';
+          body += 'Email: ' + email + '\n';
+          body += 'Phone: ' + phone + '\n';
+          if (company) body += 'Company: ' + company + '\n';
+          body += '\nI would like to enquire about the following products:\n\n';
+          items.forEach(function (item, i) {
+            body += (i + 1) + '. ' + item.name + ' (Code: ' + item.code + ', Pack: ' + item.pack + ') — Qty: ' + item.qty + '\n';
+          });
+          body += '\nPlease send me wholesale pricing. Thank you.';
+
+          window.location.href = 'mailto:sales@harrisea.net?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+        });
+      }
+    }
   }
 
   /* ---------- INITIAL FILTER RUN ---------- */
